@@ -1,2 +1,3 @@
 *.kpf
 .DS_Store
+pkg/*

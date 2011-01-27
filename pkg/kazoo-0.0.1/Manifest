@@ -1,0 +1,5 @@
+Manifest
+Rakefile
+lib/kazoo.rb
+lib/kazoo/router.rb
+lib/kazoo/sinatra.rb

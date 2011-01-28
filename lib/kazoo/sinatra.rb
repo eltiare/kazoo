@@ -6,7 +6,7 @@ class Kazoo::Sinatra < Sinatra::Base
     
     if !options[:views] && data.is_a?(Symbol) && !data.to_s.match('/')
       data = :"#{decamelize(self.class.name)}/#{data}"
-      options[:layout] ||= :'layouts/application'
+      options[:layout] = :'layouts/application' if options[:layout].nil?
     end
     
     if options[:layout] && !options[:layout].to_s.match('/')

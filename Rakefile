@@ -2,7 +2,7 @@ require 'rubygems'
 require 'rake'
 require 'echoe'
 
-Echoe.new('kazoo', '0.0.1') do |p|
+Echoe.new('kazoo', '0.0.2') do |p|
   p.description    = "Make your Ruby Rack apps act like one"
   p.url            = "http://rubykazoo.com"
   p.author         = "Jeremy Nicoll"

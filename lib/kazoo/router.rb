@@ -28,6 +28,7 @@ class Kazoo::Router
       if matches = route[0].match(env['REQUEST_PATH'])
         env['HTTP_PREFIX'] = matches[0]
         env['PATH_INFO'] = env['PATH_INFO'].sub(route[0], '')
+        env['PATH_INFO'] = "/#{env['PATH_INFO']}" unless env['PATH_INFO'].match(%r'^/')
         response = route[1].call(env)
         return response if response[1]['X-Cascade'] != 'pass'
       end

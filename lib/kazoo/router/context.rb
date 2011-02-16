@@ -37,6 +37,10 @@ class Kazoo::Router
       
     end
     
+    def error_handler(app)
+      @router.error_handler(app)
+    end
+    
   end
   
 end

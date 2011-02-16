@@ -4,9 +4,8 @@ class Kazoo::Sinatra < Sinatra::Base
   
   enable  :sessions
   
-  def call(env)
-    super
-    @params.merge!(kenv['params']) if kenv['params']
+  before do
+    params.merge!(kenv['params']) if kenv['params']
   end
   
   def ksession
@@ -14,7 +13,7 @@ class Kazoo::Sinatra < Sinatra::Base
   end
   
   def kenv
-    request.env['kazoo'] ||= {}
+    @request.env['kazoo'] ||= {}
   end
   
   def current_user=(user)

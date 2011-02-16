@@ -1,37 +1,55 @@
 class Kazoo::Router
   
   def self.map(&blk)
-    instance = new
-    instance.instance_eval(&blk)
-    instance
+    new.map(&blk)
   end
   
-  def initialize
-    @routes = []
+  def map(&blk)
+    @context ||= Context.new(self)
+    @context.instance_eval(&blk)
+    self
   end
   
-  def match(path, options = {})
-    raise "You must match a route to an app using :to" unless options[:to] && options[:to].respond_to?(:call)
-    if path.is_a?(Regexp)
-      @routes << [ path, options[:to] ]
-    elsif path.is_a?(String)
-      @routes << [ Regexp.new("^#{path}"), options[:to] ]
-    end
+  def routes
+    @routes ||= []
+  end
+  
+  def named_routes
+    @named_routes ||= {}
   end
   
   def error_handler(app)
     @error_handler = app
   end
   
+  def general_handler(app)
+    @general_handler = app
+  end
+  
+  def kenv
+    @env['kazoo'] ||= {}
+  end
+  
   def call(env)
+    @env = env
     @routes.each do |route|
-      if matches = route[0].match(env['REQUEST_PATH'])
-        env['HTTP_PREFIX'] = matches[0]
-        env['PATH_INFO'] = env['PATH_INFO'].sub(route[0], '')
+      env['PATH_INFO'] = "#{env["PATH_INFO"]}/" unless %r'/$'.match(env['PATH_INFO'])
+      params = route.extract_params(env['PATH_INFO'])
+      
+      if params && route.app
+        kenv['params'] ||= {}
+        kenv['params'].merge!(params)
+        
+        match = route.to_regexp.match(env['PATH_INFO'])[0]
+        kenv['path_prefix'] = kenv['path_prefix'] ? File.join(kenv['path_prefix'], match) : match
+        
+        env['PATH_INFO'] = env['PATH_INFO'].sub(match, '')
         env['PATH_INFO'] = "/#{env['PATH_INFO']}" unless env['PATH_INFO'].match(%r'^/')
-        response = route[1].call(env)
-        return response if response[1]['X-Cascade'] != 'pass'
+        
+        response = route.app.call(env)
+        return response unless response[1]['X-Cascade'] == 'pass'
       end
+      
     end
     
     # If no routes found

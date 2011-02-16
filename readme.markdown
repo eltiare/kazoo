@@ -1,7 +1,7 @@
 Kazoo
 =====
 
-Kazoo is a Ruby library that aims to make your Rack applications behave like one. So far, it's very minimal with a simple router and some methods added to Sinatra to make it easier to have multiple Sinatra apps act more cohesively. Please note the current version on this: 0.0.1. This is nowhere near finished! It is on rubygems.org so that you can install it by running:
+Kazoo is a Ruby library that aims to make your Rack applications behave like one. So far, it's very minimal with a simple router and some methods added to Sinatra to make it easier to have multiple Sinatra apps act more cohesively. Please note the current version on this: 0.0.3. This is nowhere near finished! It is on rubygems.org so that you can install it by running:
 
     gem install kazoo
 
@@ -9,7 +9,6 @@ The Kazoo router takes string paths and matches them to apps with no bells or wh
 
     require 'rubygems'
     require 'kazoo'
-    require 'kazoo/router'
     
     # Omitted code that pulls in Sinatra apps...
     

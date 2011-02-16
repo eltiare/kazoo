@@ -1,4 +1,12 @@
+$LOAD_PATH.push(File.dirname(__FILE__))
+
+require 'cgi'
+
 module Kazoo;   end
 
-base_path = File.dirname(__FILE__)
-#Dir["#{base_path}/kazoo/*.rb"].each { |library| require library }
+require "kazoo/support"
+require "kazoo/accessors"
+
+require 'kazoo/router/route'
+require 'kazoo/router/context'
+require "kazoo/router"

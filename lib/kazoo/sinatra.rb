@@ -2,6 +2,35 @@ require 'sinatra/base'
 
 class Kazoo::Sinatra < Sinatra::Base
   
+  enable  :sessions
+  
+  def call(env)
+    super
+    @params.merge!(kenv['params']) if kenv['params']
+  end
+  
+  def ksession
+    session['kazoo'] ||= {}
+  end
+  
+  def kenv
+    request.env['kazoo'] ||= {}
+  end
+  
+  def current_user=(user)
+    if user
+      ksession['user_id'] = user.id
+      ksession['user_class'] = user.class.name
+    else
+      ksession['user_class'] = ksession['user_id'] = nil
+    end
+    user
+  end
+  
+  def current_user
+    @_kcu ||= Kernal.const_get(k).find(ksession['user_id']) if ksession['user_id']
+  end
+  
   def render(engine, data, options = {}, *args)
     
     if !options[:views] && data.is_a?(Symbol) && !data.to_s.match('/')
@@ -45,27 +74,30 @@ class Kazoo::Sinatra < Sinatra::Base
     self.class.paths
   end
   
-  def url(name, opts = {})
-    n = name.to_sym
-    raise ArgumentError, "Invalid url name: #{name}" unless paths[n]
+  def url(name = '', opts = {})
+    if name.is_a?(Symbol)
+      raise ArgumentError, "Invalid url name: #{name}" unless paths[name]
     
-    url_path = paths[n].split('/').map { |part|
-      next unless part.is_a?(String)
-      if matches = part.match(/^:([a-z_]+)$/i)
-        matched = matches[1].downcase
-        opts[matched] || opts[matched.to_sym] || params[matched] || raise("You need to pass '#{matched}' to generate URL")
-      else
-        part
-      end
-    }.join('/')
-    
-    # Check for prefix
-    full_path = request.env['HTTP_PREFIX'] ? File.join(request.env['HTTP_PREFIX'], url_path) : url_path
-    
-    format = opts[:format] || opts['format']
-    full_path << ".#{format}" if format
-    
-    full_path
+      url_path = paths[name].split('/').map { |part|
+        next unless part.is_a?(String)
+        if matches = part.match(/^:([a-z_]+)$/i)
+          matched = matches[1].downcase
+          opts[matched] || opts[matched.to_sym] || params[matched] || raise("You need to pass '#{matched}' to generate URL")
+        else
+          part
+        end
+      }.join('/')
+      
+      # Check for prefix
+      full_path = kenv['HTTP_PREFIX'] ? File.join(kenv['HTTP_PREFIX'], url_path) : url_path
+      
+      format = opts[:format] || opts['format']
+      full_path << ".#{format}" if format
+      
+      full_path
+    else
+      kenv['HTTP_PREFIX'] ? File.join(kenv['HTTP_PREFIX'], name) : name
+    end
   end
 
 private

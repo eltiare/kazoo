@@ -2,7 +2,15 @@ MIT-License
 Manifest
 Rakefile
 lib/kazoo.rb
+lib/kazoo/accessors.rb
 lib/kazoo/router.rb
+lib/kazoo/router/context.rb
+lib/kazoo/router/route.rb
 lib/kazoo/sinatra.rb
 lib/kazoo/support.rb
 readme.markdown
+spec/router/context_spec.rb
+spec/router/route_spec.rb
+spec/router_spec.rb
+spec/spec.opts
+spec/spec_helper.rb

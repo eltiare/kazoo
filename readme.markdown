@@ -1,7 +1,7 @@
 Kazoo
 =====
 
-Kazoo is a Ruby framework to faciliate modular content management applications. So far, it's a router and some methods added to Sinatra to make it easier to have multiple Sinatra apps act more cohesively. Please note the current version on this: 0.0.3, so please be aware that it is not production ready yet. Kazoo is on rubygems.org so that you can install it by running:
+Kazoo is a Ruby framework to faciliate modular content management applications. So far, it's a router and some methods added to Sinatra to make it easier to have multiple Sinatra apps act more cohesively. Please note the current version on this: 0.0.4, so please be aware that it is not production ready yet. Kazoo is on rubygems.org so that you can install it by running:
 
     gem install kazoo
 

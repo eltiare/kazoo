@@ -5,8 +5,8 @@ require 'echoe'
 require 'rspec'
 require 'rspec/core/rake_task'
 
-Echoe.new('kazoo', '0.0.3') do |p|
-  p.description    = "Make your Ruby Rack apps act like one"
+Echoe.new('kazoo', '0.0.4') do |p|
+  p.description    = "A moduler framework to facilitate the development of content management systems"
   p.url            = "http://rubykazoo.com"
   p.author         = "Jeremy Nicoll"
   p.email          = "jnicoll @nspam@ accentuate.me"

@@ -10,10 +10,31 @@ class Kazoo::Router
     def match(path, opts)
       opts = @opts.merge(opts)
       name = extract_name(opts)
+      
+      if get(:mode) == :app 
+        opts[:app_mode] =  true
+      else
+        opts[:default_app] = @default_app
+      end
+      
       route = Route.new(path, opts)
       @router.named_routes[name] = route if name
       @router.routes << route
       route
+    end
+    
+    def set(var,val)
+      @router.set(var,val)
+    end
+    
+    def get(var)
+      @router.get(var)
+    end
+    
+    def default_app(app)
+      raise ArgumentError, "default_app must be a rack application (#{app} doesn't respond to call)" unless app.respond_to?(:call)
+      raise NameError, "NameError: undefined local variable or method `default_app' for #{self}" if get(:mode) == :app
+      @default_app = app
     end
     
     def context(opts = {})

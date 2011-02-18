@@ -8,11 +8,22 @@ class Kazoo::Router
       @opts = opts
       
       # Extract & delete the special options
-      @app = opts.delete(:to)
+      app_mode = opts.delete(:app_mode)
+      
+      to = opts.delete(:to)
+      default_app = opts.delete(:default_app)
+      @app =  to || default_app
+      
+      raise ArgumentError, 'You must supply an application/block' if !@app && !app_mode
       
       @path_prefix = opts.delete(:path_prefix)
       @regex_prefix = opts.delete(:regex_prefix)
       opts.delete(:name_prefix)
+      
+      opts.each { |k,v|
+        opts.delete(k)
+        opts[k.to_s] = v
+      }
       
       # Parse the path
       if path.is_a?(String)
@@ -46,7 +57,7 @@ class Kazoo::Router
       
       final_path = "/#{final_path}" unless final_path.match(%r"^\/")
       final_path = "#{final_path}/" unless final_path.match(%r"\/$")
-      @matcher = Regexp.new("^#{final_path}")
+      @matcher = Regexp.new(app_mode ? "^#{final_path}$" : "^#{final_path}" )
     end
     
     def to_s

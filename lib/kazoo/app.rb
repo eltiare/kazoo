@@ -52,12 +52,16 @@ module Kazoo::App
     self.class.path(name,path,opts)
   end
   
+  def krouter
+    self.class.krouter
+  end
+  
   def url(name = '', opts = {})
     
     if name.is_a?(Symbol)
-      raise ArgumentError, "Invalid url name: #{name}" unless named_routes[name]
+      raise ArgumentError, "Invalid url name: #{name}" unless krouter.named_routes[name]
     
-      url_path = named_routes[name].to_s.split('/').map { |part|
+      url_path = krouter.named_routes[name].to_s.split('/').map { |part|
         next unless part.is_a?(String)
         if matches = part.match(/^:([a-z_]+)$/i)
           matched = matches[1].downcase
@@ -68,7 +72,7 @@ module Kazoo::App
       }.join('/')
       
       # Check for prefix
-      full_path = kenv['HTTP_PREFIX'] ? File.join(kenv['HTTP_PREFIX'], url_path) : url_path
+      full_path = kenv['path_prefix'] ? File.join(kenv['path_prefix'], url_path) : url_path
       
       format = opts[:format] || opts['format']
       full_path << ".#{format}" if format

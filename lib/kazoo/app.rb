@@ -1,21 +1,25 @@
 module Kazoo::App
   
-  include Kazoo::Router::App
-  
   def self.included(klass)
     klass.send(:extend, ClassMethods)
   end
   
   module ClassMethods
+    
+    def krouter
+      @_krouter ||= Kazoo::Router::App.new
+    end
   
-    def path_options(val)
+    def path_options=(val)
       if val.is_a?(Hash)
         @_route_options = val
-      elsif val
-        raise ArgumentError, "route_options must be a hash"
       else
-        @_route_options || {}
+        raise ArgumentError, "route_options must be a hash"
       end
+    end
+    
+    def path_options
+      @_route_options || {}
     end
     
     def set_paths(opts)
@@ -33,12 +37,12 @@ module Kazoo::App
       if path
         raise ArgumentError, "Path must be a string" unless path.is_a?(String)
         path = File.join(path_prefix, path) if path_prefix
-        route = Route.new(path, opts)
-        add_route(route, name.to_sym)
+        route = Kazoo::Router::Route.new(path, opts.merge(:app_mode => true))
+        krouter.add_route(route, name.to_sym)
         path
       else
-        raise ArgumentError, "#The route `{name}` does not exist" unless named_routes[name]
-        named_routes[name].to_s if named_routes[name]
+        raise ArgumentError, "#The route `{name}` does not exist" unless krouter.named_routes[name]
+        krouter.named_routes[name].to_s
       end
     end
     

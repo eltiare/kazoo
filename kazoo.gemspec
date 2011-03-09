@@ -10,8 +10,8 @@ Gem::Specification.new do |s|
   s.date = %q{2011-03-09}
   s.description = %q{A moduler framework to facilitate the development of content management systems}
   s.email = %q{jnicoll @nspam@ accentuate.me}
-  s.extra_rdoc_files = ["lib/kazoo.rb", "lib/kazoo/accessors.rb", "lib/kazoo/router.rb", "lib/kazoo/router/context.rb", "lib/kazoo/router/route.rb", "lib/kazoo/sinatra.rb", "lib/kazoo/support.rb"]
-  s.files = ["MIT-License", "Manifest", "Rakefile", "lib/kazoo.rb", "lib/kazoo/accessors.rb", "lib/kazoo/router.rb", "lib/kazoo/router/context.rb", "lib/kazoo/router/route.rb", "lib/kazoo/sinatra.rb", "lib/kazoo/support.rb", "readme.markdown", "spec/router/context_spec.rb", "spec/router/route_spec.rb", "spec/router_spec.rb", "spec/spec.opts", "spec/spec_helper.rb", "kazoo.gemspec"]
+  s.extra_rdoc_files = ["lib/kazoo.rb", "lib/kazoo/accessors.rb", "lib/kazoo/app.rb", "lib/kazoo/router.rb", "lib/kazoo/router/app.rb", "lib/kazoo/router/common.rb", "lib/kazoo/router/context.rb", "lib/kazoo/router/dispatch.rb", "lib/kazoo/router/route.rb", "lib/kazoo/sinatra.rb", "lib/kazoo/support.rb"]
+  s.files = ["MIT-License", "Manifest", "Rakefile", "lib/kazoo.rb", "lib/kazoo/accessors.rb", "lib/kazoo/app.rb", "lib/kazoo/router.rb", "lib/kazoo/router/app.rb", "lib/kazoo/router/common.rb", "lib/kazoo/router/context.rb", "lib/kazoo/router/dispatch.rb", "lib/kazoo/router/route.rb", "lib/kazoo/sinatra.rb", "lib/kazoo/support.rb", "readme.markdown", "spec/router/context_spec.rb", "spec/router/route_spec.rb", "spec/router_spec.rb", "spec/spec.opts", "spec/spec_helper.rb", "kazoo.gemspec"]
   s.homepage = %q{http://rubykazoo.com}
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Kazoo", "--main", "readme.markdown"]
   s.require_paths = ["lib"]

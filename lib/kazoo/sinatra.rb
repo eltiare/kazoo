@@ -10,6 +10,13 @@ class Kazoo::Sinatra < Sinatra::Base
     params.merge!(kenv['params']) if kenv['params']
   end
   
+  def call(env)
+    puts '============ Sinatra Environment: ==============='
+    puts env.inspect
+    
+    dup.call!(env)  
+  end
+  
   def ksession
     session['kazoo'] ||= {}
   end

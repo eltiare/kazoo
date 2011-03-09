@@ -5,7 +5,10 @@ lib/kazoo.rb
 lib/kazoo/accessors.rb
 lib/kazoo/app.rb
 lib/kazoo/router.rb
+lib/kazoo/router/app.rb
+lib/kazoo/router/common.rb
 lib/kazoo/router/context.rb
+lib/kazoo/router/dispatch.rb
 lib/kazoo/router/route.rb
 lib/kazoo/sinatra.rb
 lib/kazoo/support.rb

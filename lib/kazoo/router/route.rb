@@ -5,24 +5,25 @@ class Kazoo::Router
     def initialize(path, opts = {})
       
       @named_params = []
-      @opts = opts
+      @opts = opts.dup
       
       # Extract & delete the special options
-      app_mode = opts.delete(:app_mode)
+      app_mode = @opts.delete(:app_mode)
       
-      to = opts.delete(:to)
-      default_app = opts.delete(:default_app)
+      to = @opts.delete(:to)
+      default_app = @opts.delete(:default_app)
       @app =  to || default_app
       
       raise ArgumentError, 'You must supply an application/block' if !@app && !app_mode
       
-      @path_prefix = opts.delete(:path_prefix)
-      @regex_prefix = opts.delete(:regex_prefix)
-      opts.delete(:name_prefix)
+      @path_prefix = @opts.delete(:path_prefix)
+      @regex_prefix = @opts.delete(:regex_prefix)
+      @opts.delete(:name_prefix)
       
-      opts.each { |k,v|
-        opts.delete(k)
-        opts[k.to_s] = v
+      @opts.each { |k,v|
+        next if k.is_a?(String)
+        @opts.delete(k)
+        @opts[k.to_s] = v
       }
       
       # Parse the path

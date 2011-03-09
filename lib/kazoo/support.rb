@@ -1,6 +1,5 @@
 module Kazoo::Support
   
-  
   def load_files(files)
     excepted_inits = []
     files.sort.each do |init|

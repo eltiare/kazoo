@@ -7,3 +7,5 @@ module Kazoo
   end
 
 end
+
+module KMod; end

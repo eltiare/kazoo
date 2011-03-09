@@ -55,7 +55,13 @@ class Kazoo::Router
     end
     
     def extract_name(opts)
-      
+      if @opts[:name_prefix]  && opts[:name]
+        "#{@opts[:name_prefix]}_#{opts[:name]}"
+      elsif opts[:name]
+        opts[:name]
+      else
+        nil
+      end
     end
     
     def error_handler(app)

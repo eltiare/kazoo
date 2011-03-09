@@ -3,6 +3,7 @@ Manifest
 Rakefile
 lib/kazoo.rb
 lib/kazoo/accessors.rb
+lib/kazoo/app.rb
 lib/kazoo/router.rb
 lib/kazoo/router/context.rb
 lib/kazoo/router/route.rb

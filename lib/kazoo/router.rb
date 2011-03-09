@@ -3,8 +3,46 @@ class Kazoo::Router
   module App
     
     def self.included(klass)
-      klass.send(:include, Dispatch)
+      klass.send(:include, Common)
       klass.set :type, :app
+      klass.send(:extend, ClassMethods)
+    end
+    
+    
+    module ClassMethods
+      
+      def map(opts = {}, &blk)
+        @_context_options = opts
+        @_context ||= Context.new(self, opts)
+        @_context.instance_eval(&blk)
+        self
+      end
+      
+      def context_options
+        @_context_opts
+      end
+      
+      def add_route(route, name=nil)
+        routes << route
+        named_routes[name.to_sym] = route if name
+      end
+      
+      def routes
+        @_routes ||= []
+      end
+      
+      def named_routes
+        @_named_routes ||= {}
+      end
+      
+    end
+    
+    def routes
+      @_routes ||= self.class.routes.dup
+    end
+    
+    def named_routes
+      @_named_routes ||= self.class.named_routes.dup
     end
     
   end
@@ -13,10 +51,34 @@ class Kazoo::Router
   module Dispatch
     
     def self.included(klass)
-      klass.send(:extend, ClassMethods)
+      klass.send(:include, Common)
       klass.set :type, :dispatch
+      klass.send(:extend, ClassMethods)
     end
     
+    module ClassMethods
+      
+      def map(&blk)
+        new.map(&blk)
+      end
+      
+    end
+    
+    def error_handler(app)
+      @error_handler = app
+    end
+    
+    def general_handler(app)
+      @general_handler = app
+    end
+    
+  end
+  
+  module Common
+    
+    def self.included(klass)
+      klass.send(:extend, ClassMethods)
+    end
     
     module ClassMethods
       
@@ -30,11 +92,11 @@ class Kazoo::Router
         @_settings[var.to_sym]
       end
       
-      def map(&blk)
-        new.map(&blk)
+      def context_options
+        nil
       end
       
-    end
+    end#ClassMethods
     
     def set(var,val)
       @_settings ||= {}
@@ -46,10 +108,16 @@ class Kazoo::Router
       @_settings[var.to_sym] || self.class.get(var)
     end
     
-    def map(&blk)
-      @context ||= Context.new(self)
+    def map(opts = {}, &blk)
+      opts = self.class.context_options.merge(opts) if self.class.context_options
+      @context ||= Context.new(self, opts)
       @context.instance_eval(&blk)
       self
+    end
+    
+    def add_route(route, name=nil)
+      routes << route
+      named_routes[name.to_sym] = route if name
     end
     
     def routes
@@ -58,14 +126,6 @@ class Kazoo::Router
     
     def named_routes
       @named_routes ||= {}
-    end
-    
-    def error_handler(app)
-      @error_handler = app
-    end
-    
-    def general_handler(app)
-      @general_handler = app
     end
     
     def kenv
@@ -109,7 +169,7 @@ class Kazoo::Router
         default_response
       end
     end
-
+    
   end
   
   include Dispatch

@@ -11,9 +11,6 @@ class Kazoo::Sinatra < Sinatra::Base
   end
   
   def call(env)
-    puts '============ Sinatra Environment: ==============='
-    puts env.inspect
-    
     dup.call!(env)  
   end
   

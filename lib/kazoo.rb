@@ -13,3 +13,5 @@ require 'kazoo/router/context'
 require "kazoo/router"
 
 require 'kazoo/app'
+
+require 'kazoo/bouncer'

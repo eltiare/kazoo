@@ -77,8 +77,6 @@ class Kazoo::Router
           env['PATH_INFO'] = env['PATH_INFO'].sub(match, '')
           env['PATH_INFO'] = "/#{env['PATH_INFO']}" unless env['PATH_INFO'].match(%r'^/')
           
-          puts "====== Environment: #{env.inspect} ========"
-          puts "====== App: #{route.app} ======="
           response = route.app.call(env)
           return response unless response[1]['X-Cascade'] == 'pass'
         elsif get(:mode) == :app && params

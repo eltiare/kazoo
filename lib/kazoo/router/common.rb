@@ -62,6 +62,7 @@ class Kazoo::Router
       @env = env
       kenv['params'] ||= {}
       
+      #TODO: This hack is causing problems. Figure out regexp to match paths better. 
       env['PATH_INFO'] = "#{env["PATH_INFO"]}/" unless %r'/$'.match(env['PATH_INFO'])
       
       @routes.each do |route|
@@ -78,7 +79,15 @@ class Kazoo::Router
           env['PATH_INFO'] = "/#{env['PATH_INFO']}" unless env['PATH_INFO'].match(%r'^/')
           
           response = route.app.call(env)
-          return response unless response[1]['X-Cascade'] == 'pass'
+          
+          if response[1]['X-Cascade'] == 'pass'
+            next 
+          elsif @error_handler && response[0] > 399
+            return @error_handler.call(env, *response)
+          else
+            return response
+          end
+          
         elsif get(:mode) == :app && params
           return params
         end
@@ -87,13 +96,7 @@ class Kazoo::Router
       
       # If no routes found
       default_response = [404, {'Content-Type' => 'text/plain', "X-Cascade" => "pass"}, 'The requested URI is not found']
-      if @error_handler
-        env['error'] = 'not_found'
-        env['default_response'] = default_response
-        @error_handler.call(env)
-      else
-        default_response
-      end
+      @error_handler ?  @error_handler.call(env, *default_response) :  default_response
     end
     
   end

@@ -14,4 +14,6 @@ require "kazoo/router"
 
 require 'kazoo/app'
 
+
 require 'kazoo/bouncer'
+require 'kazoo/bouncer/authenticator'

@@ -1,6 +1,6 @@
 class Kazoo::Bouncer
   
-  def authenticators
+  def self.authenticators
     @_authenticators ||= []
   end
   
@@ -18,34 +18,44 @@ class Kazoo::Bouncer
   end
   
   def session
-    @env['rack.session']
-  end
-  
-  def params
-    @request.params
+    @request.session
   end
   
   def current_user
-    @_current_user ||= if session['kazoo.user'][0]
-      eval(session['kazoo.user'][0]).find(session['kazoo.user'][1]) rescue nil
+    @_current_user ||= if session['kazoo.user'] && session['kazoo.user'][0]
+      Kernel.const_get(session['kazoo.user'][0]).find(session['kazoo.user'][1]) rescue nil
     end
   end
   
+  def current_user=(user)
+    if user.nil?
+      forget
+    else
+      session['kazoo.user'] = [user.class.name, user.id]
+      user
+    end
+  end
+  
+  def authenticated?
+    session['kazoo.authenticated'] ? true : false
+  end
+  
   def forget
+    session.delete('kazoo.authenticated')
     session.delete('kazoo.user')
   end
   
   def authenticate!
     self.class.authenticators.each { |auth|
-      if user = auth.new.call(@req)
-        session['kazoo.user'] = [user.class.name, user.id]
+      user = auth.new.call(request)
+      if user
+        session['kazoo.authenticated'] = '1'
+        self.current_user = user if user.class.respond_to?(:find)
+        puts 'Session: ', session.inspect
         return user
       end
-    } unless current_user
+    }
+    nil
   end
-  
-  
-  
-  
   
 end

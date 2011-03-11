@@ -4,6 +4,8 @@ Rakefile
 lib/kazoo.rb
 lib/kazoo/accessors.rb
 lib/kazoo/app.rb
+lib/kazoo/bouncer.rb
+lib/kazoo/bouncer/authenticator.rb
 lib/kazoo/router.rb
 lib/kazoo/router/app.rb
 lib/kazoo/router/common.rb

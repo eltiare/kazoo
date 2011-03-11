@@ -4,14 +4,13 @@ class Kazoo::Sinatra < Sinatra::Base
   
   include Kazoo::App
   
-  enable  :sessions
-  
   before do
     params.merge!(kenv['params']) if kenv['params']
   end
   
-  def call(env)
-    dup.call!(env)  
+  def call!(env)
+    @_bouncer ||= Kazoo::Bouncer.new(env)
+    super
   end
   
   def ksession
@@ -23,17 +22,22 @@ class Kazoo::Sinatra < Sinatra::Base
   end
   
   def current_user=(user)
-    if user
-      ksession['user_id'] = user.id
-      ksession['user_class'] = user.class.name
-    else
-      ksession['user_class'] = ksession['user_id'] = nil
-    end
+    @_bouncer.current_user = user
     user
   end
   
   def current_user
-    @_kcu ||= Kernal.const_get(k).find(ksession['user_id']) if ksession['user_id']
+    @_bouncer.current_user
+  end
+  
+  def authenticate!
+    unless @_bouncer.authenticated?
+      if @_bouncer.authenticate!
+        halt 302, {'Location' => request.env['rack.url_scheme'] + '://' +request.env['HTTP_HOST']  + request.env['REQUEST_PATH']}, ''
+      else
+        throw(:halt, [401, "Not authorized\n"])
+      end
+    end
   end
   
   def render(engine, data, options = {}, *args)

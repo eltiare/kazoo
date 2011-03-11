@@ -2,6 +2,7 @@ module Kazoo::App
   
   def self.included(klass)
     klass.send(:extend, ClassMethods)
+    klass.send(:include, Kazoo::Support)
   end
   
   module ClassMethods
@@ -83,13 +84,6 @@ module Kazoo::App
     end
     
   end
-  
-  
-  def decamelize(class_name)
-    parts = class_name.split('::')
-    parts.map { |part|
-      part.gsub(/([A-Z])/, '_\1').gsub(/(^\_)|(\_$)/, '').downcase
-    }.join('/')
-  end
+
 
 end

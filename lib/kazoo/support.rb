@@ -24,7 +24,7 @@ module Kazoo::Support
     }.join('/')
   end
   
-  def load_files(files)
+  def self.load_files(files)
     excepted_inits = []
     files.sort.each do |init|
       begin
@@ -58,6 +58,10 @@ module Kazoo::Support
     end#while
   
   end#def
+  
+  def load_files(files)
+    self.class.load_files(files)
+  end
 
   
 end#module

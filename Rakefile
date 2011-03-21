@@ -7,7 +7,7 @@ require 'rspec/core/rake_task'
 
 $LOAD_PATH.push( File.join(File.dirname(__FILE__), 'lib') )
 
-Echoe.new('kazoo', '0.0.6') do |p|
+Echoe.new('kazoo', '0.0.7') do |p|
   p.description    = "A moduler framework to facilitate the development of content management systems"
   p.url            = "http://rubykazoo.com"
   p.author         = "Jeremy Nicoll"

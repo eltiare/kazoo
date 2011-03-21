@@ -33,7 +33,7 @@ class Kazoo::Sinatra < Sinatra::Base
   def authenticate!
     unless @_bouncer.authenticated?
       if @_bouncer.authenticate!
-        halt 302, {'Location' => request.env['rack.url_scheme'] + '://' +request.env['HTTP_HOST']  + request.env['REQUEST_PATH']}, ''
+        halt 302, {'Location' => '//' + request.env['HTTP_HOST']  + request.env['REQUEST_PATH']}, ''
       else
         throw(:halt, [401, "Not authorized\n"])
       end
